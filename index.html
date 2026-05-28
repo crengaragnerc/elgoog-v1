@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Elgoog</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Elgoog</h1>
+  <p id="level">nivel 1</p>
+
+  <div id="profile">
+    <p>opinion: <span id="elgoogOpinion">neutral</span></p>
+    <p>satisfacción: <span id="satisfaction">50%</span></p>
+  </div>
+
+  <div id="chat"></div>
+
+  <textarea id="input" placeholder="responde como ia..."></textarea>
+
+  <button onclick="submitAnswer()">responder</button>
+  <button onclick="nextQuestion()">siguiente</button>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
