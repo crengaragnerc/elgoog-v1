@@ -1,0 +1,119 @@
+const baseQuestions = [
+  "cagar verde normal",
+  "como hacer cubo rubik",
+  "que se celebra 15 de agosto y porque",
+  "no dormir una noche que pasa",
+  "xq agua es liquida",
+  "como allanar un barranco",
+  "tomate fruta verdura?",
+  "cancion tan tan tan tann nombre",
+  "como saber si alguien te ha bloqueado",
+  "porque no carga una pagina web"
+];
+
+let questions = [...baseQuestions];
+
+let index = 0;
+let satisfaction = 50;
+let opinion = "neutral";
+let level = 1;
+
+let chatHistory = [];
+let achievements = new Set();
+
+/* ---------------- UI ---------------- */
+
+function addMessage(text, type) {
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.classList.add("msg", type);
+  div.innerText = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/* -------- ELGOOG PERSONALIDAD -------- */
+
+function getElgoogResponse(answer, score) {
+
+  const low = ["no entiendo", "raro esto", "no se", "no tiene sentido"];
+  const mid = ["puede ser si", "entiendo mas o menos", "ok eso suena"];
+  const high = ["entiendo perfecto", "ok correcto", "tiene sentido"];
+  const glitch = ["cagar verde normal", "agua liquida si", "internet lento problema", "error 404 pagina no"];
+  const believe = ["ok entonces es verdad", "vale lo acepto", "tiene sentido ahora"];
+
+  if (score <= 3) return low[Math.floor(Math.random()*low.length)];
+  if (score <= 6) return mid[Math.floor(Math.random()*mid.length)];
+  if (score <= 8) return high[Math.floor(Math.random()*high.length)];
+  if (Math.random() < 0.4) return believe[Math.floor(Math.random()*believe.length)];
+  return glitch[Math.floor(Math.random()*glitch.length)];
+}
+
+/* -------- MAIN GAME -------- */
+
+function submitAnswer() {
+
+  const input = document.getElementById("input");
+  const answer = input.value;
+  if (!answer) return;
+
+  const question = questions[index];
+
+  addMessage("usuario: " + answer, "user");
+
+  let score = 5;
+
+  if (answer.length > 40) score++;
+  if (answer.includes("porque")) score++;
+  score += Math.floor(Math.random()*2);
+
+  score = Math.min(10, Math.max(0, score));
+
+  const response = getElgoogResponse(answer, score);
+
+  addMessage("elgoog: " + response, "elgoog");
+
+  chatHistory.push({ question, answer, response });
+
+  if (score >= 8) {
+    satisfaction += 10;
+    opinion = "elgoog confia en ti";
+  } else if (score >= 5) {
+    satisfaction += 3;
+    opinion = "elgoog duda";
+  } else {
+    satisfaction -= 5;
+    opinion = "elgoog no entiende";
+  }
+
+  satisfaction = Math.max(0, Math.min(100, satisfaction));
+
+  updateUI();
+
+  input.value = "";
+}
+
+/* -------- NEXT QUESTION -------- */
+
+function nextQuestion() {
+  index = (index + 1) % questions.length;
+  addMessage("elgoog: " + questions[index], "elgoog");
+}
+
+/* -------- UI -------- */
+
+function updateUI() {
+  document.getElementById("elgoogOpinion").innerText = opinion;
+  document.getElementById("satisfaction").innerText = satisfaction + "%";
+
+  if (satisfaction > 70) level = 3;
+  else if (satisfaction > 40) level = 2;
+  else level = 1;
+
+  document.getElementById("level").innerText = "nivel " + level;
+}
+
+/* -------- START -------- */
+
+addMessage("elgoog: " + baseQuestions[0], "elgoog");
+updateUI();
