@@ -85,6 +85,46 @@ function submitAnswer() {
     addMessage("elgoog: " + questions[index], "elgoog");
   }, 600);
 }
+
+  // 1. usuario responde
+  addMessage("usuario: " + answer, "user");
+
+  // score
+  let score = 5;
+
+  if (answer.length < 3) score -= 2;
+  if (answer.length > 20) score += 1;
+  if (answer.includes("porque")) score += 2;
+  if (answer.includes("es") || answer.includes("significa")) score += 1;
+  if (answer === "a" || answer === "no" || answer === "que") score -= 3;
+
+  score = Math.max(0, Math.min(10, score));
+
+  // 2. elgoog responde FINAL
+  const response = getElgoogResponse(answer, score);
+  addMessage("elgoog: " + response, "elgoog");
+
+  // perfil
+  if (score >= 7) {
+    satisfaction += 10;
+    opinion = "elgoog confia en ti";
+  } else {
+    satisfaction -= 5;
+    opinion = "elgoog duda";
+  }
+
+  satisfaction = Math.max(0, Math.min(100, satisfaction));
+
+  updateUI();
+
+  input.value = "";
+
+  // 3. PASA A SIGUIENTE RONDA (SIN MENSAJES EXTRA)
+  setTimeout(() => {
+    index = (index + 1) % questions.length;
+    addMessage("elgoog: " + questions[index], "elgoog");
+  }, 600);
+}
   addMessage("usuario: " + answer, "user");
 
   let score = 5;
